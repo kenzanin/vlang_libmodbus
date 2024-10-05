@@ -139,3 +139,17 @@ fn C.modbus_free(&C.modbus_t)
 pub fn modbus_free(mut m Modbus_t) {
 	C.modbus_free(m)
 }
+
+// int modbus_write_and_read_registers(
+//    modbus_t *ctx,
+//    int write_addr, int write_nb, const uint16_t *src,
+//    int read_addr, int read_nb, const uint16_t *dest
+//);
+fn C.modbus_write_and_read_registers(&C.modbus_t, int, int, const_src &u16, int, int, const_dest &u16)
+
+pub fn modbus_write_and_read_registers(mut m Modbus_t,
+	write_addr int, write_nb int, mut s []u16,
+	read_addr int, read_nb int, mut dest []u16) {
+	C.modbus_write_and_read_registers(m, write_addr, write_nb, s.data, read_addr, read_nb,
+		dest.data)
+}
