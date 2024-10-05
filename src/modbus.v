@@ -1,4 +1,4 @@
-module modbus_v
+module modbus
 
 import log
 
@@ -27,7 +27,7 @@ pub type Modbus_t = C.modbus_t
 fn C.modbus_new_rtu(&char, int, char, int, int) &C.modbus_t
 
 pub fn modbus_new_rtu(device string, baud int, parity rune, data_bit int, stop_bit int) !&Modbus_t {
-	log.info('oppening dev ${device} with baud: ${baud}')
+	log.info('oppening dev: ${device}, baud: ${baud}, parity: ${parity} ,data_bit: ${data_bit},stop_bit: ${stop_bit}')
 	mut tmp := C.modbus_new_rtu(device.str, baud, parity, data_bit, stop_bit)
 	if tmp == C.NULL {
 		return error('error create mobus')
@@ -38,15 +38,21 @@ pub fn modbus_new_rtu(device string, baud int, parity rune, data_bit int, stop_b
 // MODBUS_API int modbus_connect(modbus_t *ctx);
 fn C.modbus_connect(&C.modbus_t) int
 
-pub fn modbus_connect(mut m Modbus_t) int {
-	return C.modbus_connect(m)
+pub fn modbus_connect(mut m Modbus_t) ! {
+	tmp := C.modbus_connect(m)
+	if tmp != 0 {
+		return error('modbus connection error code: ${tmp}')
+	}
 }
 
 // MODBUS_API int modbus_set_slave(modbus_t *ctx, int slave);
 fn C.modbus_set_slave(&C.modbus_t, int) int
 
-pub fn modbus_set_slave(mut m Modbus_t, id int) int {
-	return C.modbus_set_slave(m, id)
+pub fn modbus_set_slave(mut m Modbus_t, id int) ! {
+	tmp := C.modbus_set_slave(m, id)
+	if tmp != 0 {
+		return error('error setting slave addr code: ${tmp}')
+	}
 }
 
 // void modbus_set_float_abcd(float f, uint16_t *dest);
