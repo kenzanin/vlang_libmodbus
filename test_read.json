@@ -1,0 +1,9 @@
+{
+	"MODBUS":	{
+		"device":	"/dev/tnt1",
+		"baud":	9600,
+		"parity":	"N",
+		"data_bit":	8,
+		"stop_bit":	1
+	}
+}

@@ -5,18 +5,6 @@ import log
 #flag -I/usr/include/modbus -lmodbus
 #include "modbus.h"
 
-// void modbus_set_float_cdab(float f, uint16_t *dest);
-pub fn C.modbus_set_float_cdab(f f32, dest &u16)
-
-// void modbus_set_float_dcba(float f, uint16_t *dest);
-pub fn C.modbus_set_float_dcba(f f32, dest &u16)
-
-// float modbus_get_float_cdab(const uint16_t *src);
-pub fn C.modbus_get_float_cdab(const_s &u16) f32
-
-// float modbus_get_float_dcba(const uint16_t *src);
-pub fn C.modbus_get_float_dcba(const_src &u16)
-
 @[typedef]
 struct C.modbus_t {
 }
@@ -60,7 +48,7 @@ fn C.modbus_set_float_abcd(f f32, dest &u16)
 
 pub fn modbus_set_float_abcd(f f32, mut dest []u16) ! {
 	if dest.len != 2 {
-		return error('dest must have len 2')
+		return error('dest.len must equ 2')
 	}
 	C.modbus_set_float_abcd(f, dest.data)
 }
@@ -70,7 +58,7 @@ fn C.modbus_set_float_badc(f f32, dest &u16)
 
 fn modbus_set_float_bcad(f f32, mut dest []u16) ! {
 	if dest.len != 2 {
-		return error('dest must have len 2')
+		return error('dest.len must equ 2')
 	}
 	C.modbus_set_float_badc(f, dest.data)
 }
@@ -80,7 +68,7 @@ fn C.modbus_get_float_abcd(const_s &u16) f32
 
 pub fn modbus_get_float_abcd(s []u16) !f32 {
 	if s.len != 2 {
-		return error('src must have len 2')
+		return error('src.len must equ 2')
 	}
 	return C.modbus_get_float_abcd(s.data)
 }
@@ -90,7 +78,7 @@ fn C.modbus_get_float_badc(const_s &u16) f32
 
 pub fn modbus_get_float_badc(s []u16) !f32 {
 	if s.len != 2 {
-		return error('src.len must equal or greater than 2')
+		return error('src.len must equ 2')
 	}
 	return C.modbus_get_float_badc(s.data)
 }
@@ -102,7 +90,11 @@ pub fn modbus_read_registers(mut m Modbus_t, addr int, mb int, mut dest []u16) !
 	if dest.len < mb {
 		return error('dest len: ${dest.len} must be bigger or equal than mb: ${mb}')
 	}
-	return C.modbus_read_registers(m, addr, mb, dest.data)
+	count := C.modbus_read_registers(m, addr, mb, dest.data)
+	if count != mb {
+		return error('error in reading probe')
+	}
+	return count
 }
 
 // void modbus_set_byte_timeout(modbus_t *ctx, uint32_t to_sec, uint32_t to_usec);
@@ -148,8 +140,54 @@ pub fn modbus_free(mut m Modbus_t) {
 fn C.modbus_write_and_read_registers(&C.modbus_t, int, int, const_src &u16, int, int, const_dest &u16)
 
 pub fn modbus_write_and_read_registers(mut m Modbus_t,
-	write_addr int, write_nb int, mut s []u16,
-	read_addr int, read_nb int, mut dest []u16) {
+	write_addr int, write_nb int, s []u16,
+	read_addr int, read_nb int, mut dest []u16) ! {
+	if s.len < write_nb {
+		return error('src.len : ${s.len} must be ge then write_nb: ${write_nb}')
+	}
+	if dest.len < read_nb {
+		return error('dest.len: ${dest.len} must be ge than read_nb: ${read_nb}')
+	}
 	C.modbus_write_and_read_registers(m, write_addr, write_nb, s.data, read_addr, read_nb,
 		dest.data)
+}
+
+// void modbus_set_float_cdab(float f, uint16_t *dest);
+fn C.modbus_set_float_cdab(f f32, dest &u16)
+
+pub fn modbus_set_float_cdab(f f32, mut dest []u16) ! {
+	if dest.len != 2 {
+		return error('dest.len must equ 2')
+	}
+	C.modbus_set_float_cdab(f, dest.data)
+}
+
+// void modbus_set_float_dcba(float f, uint16_t *dest);
+fn C.modbus_set_float_dcba(f f32, dest &u16)
+
+pub fn modbus_set_float_dcba(f f32, mut dest []u16) ! {
+	if dest.len != 2 {
+		return error('dest.len must equ 2')
+	}
+	C.modbus_set_float_dcba(f, dest.data)
+}
+
+// float modbus_get_float_cdab(const uint16_t *src);
+fn C.modbus_get_float_cdab(const_s &u16) f32
+
+pub fn modbus_get_float_cdab(s []u16) !f32 {
+	if s.len != 2 {
+		return error('src.len must equ 2')
+	}
+	return C.modbus_get_float_cdab(s.data)
+}
+
+// float modbus_get_float_dcba(const uint16_t *src);
+fn C.modbus_get_float_dcba(const_src &u16) f32
+
+pub fn modbus_get_float_dcba(s []u16) !f32 {
+	if s.len != 2 {
+		return error('s.len must equ 2')
+	}
+	return C.modbus_get_float_dcba(s.data)
 }
