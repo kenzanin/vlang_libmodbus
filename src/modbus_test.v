@@ -1,4 +1,4 @@
-module modbus_v
+module modbus
 
 import log
 
@@ -8,16 +8,14 @@ fn test_create_modbus() {
 
 	modbus_set_debug(mut t, 1)
 
-	mut e := modbus_set_slave(mut t, 1)
-	assert e >= 0
+	modbus_set_slave(mut t, 1) or { panic(err) }
 
-	e = modbus_connect(mut t)
-	assert e >= 0
+	modbus_connect(mut t) or { panic(err) }
 
 	mut data := []u16{len: 10, init: 0}
 
-	e = modbus_read_registers(mut t, 0, 1, mut data) or { panic(err) }
-
+	e := modbus_read_registers(mut t, 0, 1, mut data) or { panic(err) }
+	assert e == 1
 	assert data[0] == 123
 
 	modbus_close(mut t)
