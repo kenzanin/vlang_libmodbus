@@ -1,19 +1,78 @@
 {
-    "modbus": {
-        "device": "/dev/tnt1",
-        "baud": 9600,
-        "parity": "N",
-        "data_bit": 8,
-        "stop_bit": 1,
-        "byte_timeout": 100,
-        "res_timeout": 1000
-    },
-    "ph": {
-        "enable": true,
-        "name": "PH",
-        "addr": 1,
-        "value_reg": 0,
-        "temp_reg": 2,
-        "retry": 10
-    }
+	"modbus":	{
+		"device":	"/dev/tnt1",
+		"baud":	9600,
+		"parity":	"N",
+		"data_bit":	8,
+		"stop_bit":	1,
+		"byte_timeout":	100,
+		"res_timeout":	1000,
+		"loop_timer":	500
+	},
+	"ph":	{
+		"name":	"PH",
+		"addr":	1,
+		"value_reg":	0,
+		"temp_reg":	2,
+		"retry":	10,
+		"kabp_reg":	0,
+		"value_min":	4,
+		"value_max":	9,
+		"value_rand":	0.5,
+		"ka":	0,
+		"kb":	0,
+		"enable":	true
+	},
+	"cod":	{
+		"name":	"COD",
+		"addr":	2,
+		"value_reg":	0,
+		"temp_reg":	0,
+		"retry":	10,
+		"kabp_reg":	0,
+		"value_min":	0,
+		"value_max":	0,
+		"value_rand":	0,
+		"ka":	0,
+		"kb":	0,
+		"enable":	false
+	},
+	"tss":	{
+		"name":	"TSS",
+		"addr":	3,
+		"value_reg":	0,
+		"temp_reg":	0,
+		"retry":	10,
+		"kabp_reg":	0,
+		"value_min":	0,
+		"value_max":	0,
+		"value_rand":	0,
+		"ka":	0,
+		"kb":	0,
+		"enable":	false
+	},
+	"nh3n":	{
+		"name":	"NH3N",
+		"addr":	4,
+		"value_reg":	0,
+		"temp_reg":	0,
+		"retry":	10,
+		"kabp_reg":	0,
+		"value_min":	0,
+		"value_max":	0,
+		"value_rand":	0,
+		"ka":	0,
+		"kb":	0,
+		"enable":	true
+	},
+	"db":	{
+		"host":	"localhost",
+		"user":	"postgres",
+		"password":	"123",
+		"db_name":	"sparingdb",
+		"loop_timer":	60000
+	},
+	"server":	{
+		"port":	8080
+	}
 }

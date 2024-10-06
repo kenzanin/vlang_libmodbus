@@ -2,6 +2,7 @@
 main
 test02
 sensord
+src/src
 *.exe
 *.exe~
 *.so
@@ -23,3 +24,5 @@ bin/
 # vweb and database
 *.db
 *.js
+
+lsp-cache/
