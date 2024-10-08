@@ -1,0 +1,38 @@
+@include 'header.html'
+
+<h1>SETTING OFFSET PROBE @probe_name</h1>
+
+<form action="">
+    <table>
+        <tr>
+            <th colspan="2">Curret Offset</th>
+        </tr>
+        <tr>
+            <td>KA</td>
+            <td>@ka</td>
+        </tr>
+        <tr>
+            <td>KB</td>
+            <td>@kb</td>
+        </tr>
+        <tr>
+            <th colspan="2">New Offset</th>
+        </tr>
+        <tr>
+            <td>KA</td>
+            <td><input type="number" id="KA" name="KA" value=@ka step="any" /></td>
+        </tr>
+        <tr>
+            <td>KB</td>
+            <td><input type="number" id="KB" name="KB" value=@kb step="any" /></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td align="right"><input type="submit" value="SET" /></td>
+        </tr>
+    </table>
+</form>
+@include 'footer.html'

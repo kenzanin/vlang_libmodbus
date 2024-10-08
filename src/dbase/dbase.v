@@ -17,7 +17,7 @@ mut:
 	mutex      &sync.Mutex
 }
 
-pub fn new_db(mut c config.CONFIG) &DBASE {
+pub fn new_dbase(mut c config.CONFIG) &DBASE {
 	c_db := c.db
 	db_config := pg.Config{
 		host:     c_db.host

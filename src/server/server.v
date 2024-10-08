@@ -11,8 +11,14 @@ struct Context {
 
 pub struct Server {
 	veb.StaticHandler
-mut:
+pub mut:
 	conf &config.CONFIG
+}
+
+pub fn new_server(mut c config.CONFIG) &Server {
+	return &Server{
+		conf: &c
+	}
 }
 
 pub fn (mut s Server) hello(mut ctx Context) veb.Result {
@@ -21,46 +27,21 @@ pub fn (mut s Server) hello(mut ctx Context) veb.Result {
 }
 
 pub fn (mut s Server) index(mut ctx Context) veb.Result {
-	return ctx.html('
-<html>
-<head>
-    <title> Server Sparing </title>
-</head>
-<body>
-    <h1>keluh kesah hub. kenzanin@gmail.com</h1>
-	menu<br>
-	1. <a href="/index">home</a><br>
-	2. <a href="/read">read probe</a><br>
-</body>
-</html>')
+	page_title := 'Menu'
+	return $veb.html('index.html')
 }
 
 pub fn (mut s Server) read(mut ctx Context) veb.Result {
 	s.conf.mutex.@lock()
-	defer {
-		s.conf.mutex.unlock()
-	}
-	data := '
-<html>
-<head>
-    <title> Server Sparing </title>
-</head>
-<body>
-<h1>hasil pembacaan sensor</h1>
-<br>
-PH: ${s.conf.ph.value_calc}<br>
-COD: ${s.conf.cod.value_calc}<br>
-TSS: ${s.conf.tss.value_calc}<br>
-NH3N: ${s.conf.nh3n.value_calc}<br>
-flow: 0<br>
-total: 0<br>
-temp: ${s.conf.ph.temp}<br>
-<br>
-menu<br>
-1. <a href="/index">home</a><br>
-</body>
-</html>'
-	return ctx.html(data)
+	p := &s.conf
+	ph := p.ph.value_calc
+	cod := p.cod.value_calc
+	tss := p.tss.value_calc
+	nh3n := p.nh3n.value_calc
+	temp := p.ph.temp
+	s.conf.mutex.unlock()
+	page_title := 'Hasil Pembacaan Probe'
+	return $veb.html('read.html')
 }
 
 @['/read_all'; get]
@@ -77,7 +58,7 @@ pub fn (mut s Server) probe_read_all(mut ctx Context) veb.Result {
 }
 
 @['/probe_set']
-pub fn (mut s Server) ph_enable(mut ctx Context) veb.Result {
+pub fn (mut s Server) probe_set(mut ctx Context) veb.Result {
 	s.conf.mutex.@lock()
 	defer {
 		s.conf.mutex.unlock()
@@ -113,10 +94,48 @@ pub fn (mut s Server) config_save(mut ctx Context) veb.Result {
 	return ctx.json(s.conf)
 }
 
-pub fn new_server(mut c config.CONFIG) &Server {
-	return &Server{
-		conf: &c
+fn offset_all(mut s Server, mut ctx Context, mut p config.PROBE) veb.Result {
+	ka_new_str := ctx.query['KA']
+	kb_new_str := ctx.query['KB']
+
+	page_title := 'setting ${p.name} offset'
+	probe_name := p.name
+
+	mut ka := p.ka
+	mut kb := p.kb
+
+	s.conf.mutex.@lock()
+	if ka_new_str.len > 0 {
+		ka = ka_new_str.f32()
+		p.ka = ka
 	}
+
+	if kb_new_str.len > 0 {
+		kb = kb_new_str.f32()
+		p.kb = kb
+	}
+	s.conf.mutex.unlock()
+	return $veb.html('offset.html')
+}
+
+@['/ph/offset']
+pub fn (mut s Server) ph_offset(mut ctx Context) veb.Result {
+	return offset_all(mut s, mut ctx, mut s.conf.ph)
+}
+
+@['/cod/offset']
+pub fn (mut s Server) cod_offset(mut ctx Context) veb.Result {
+	return offset_all(mut s, mut ctx, mut s.conf.cod)
+}
+
+@['/tss/offset']
+pub fn (mut s Server) tss_offset(mut ctx Context) veb.Result {
+	return offset_all(mut s, mut ctx, mut s.conf.tss)
+}
+
+@['/nh3n/offset']
+pub fn (mut s Server) nh3n_offset(mut ctx Context) veb.Result {
+	return offset_all(mut s, mut ctx, mut s.conf.nh3n)
 }
 
 pub fn (mut s Server) run() {

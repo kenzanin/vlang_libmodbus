@@ -131,8 +131,8 @@ pub fn (mut m MODBUS) read_value(mut p config.PROBE) {
 pub fn (mut m MODBUS) write_offset(p &config.PROBE, ka f32, kb f32) {
 	mut data_w := []u16{len: 4, init: 0}
 	mut data_r := []u16{len: 4, init: 0}
-	modbus.modbus_set_float_abcd(ka, mut data_w) or { panic(err) }
-	modbus.modbus_set_float_abcd(kb, mut data_w[2..]) or { panic(err) }
+	modbus.modbus_set_float_abcd(ka, mut data_w[0..2]) or { panic(err) }
+	modbus.modbus_set_float_abcd(kb, mut data_w[2..4]) or { panic(err) }
 
 	for i := 0; data_r != data_w; i++ {
 		m.conf.mutex.@lock()

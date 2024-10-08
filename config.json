@@ -19,8 +19,8 @@
 		"value_min":	4,
 		"value_max":	9,
 		"value_rand":	0.5,
-		"ka":	0,
-		"kb":	0,
+		"ka":	1,
+		"kb":	123,
 		"enable":	true
 	},
 	"cod":	{
@@ -33,7 +33,7 @@
 		"value_min":	0,
 		"value_max":	0,
 		"value_rand":	0,
-		"ka":	0,
+		"ka":	123,
 		"kb":	0,
 		"enable":	false
 	},

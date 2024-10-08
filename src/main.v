@@ -25,7 +25,7 @@ fn main() {
 	
 	mut c := config.new_config(file)
 	mut m := probe.new_modbus(mut c)
-	mut d := dbase.new_db(mut c)
+	mut d := dbase.new_dbase(mut c)
 	mut s := server.new_server(mut c)
 
 	m.run()
